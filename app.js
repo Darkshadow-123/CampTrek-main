@@ -79,9 +79,9 @@ mongoose.connect(dbUrl, {
     // Replace line 79 with this:
     (async () => {
         try {
-            const adminUser = await User.findOne({ username: 'admin' });
+            const adminUser = await User.findOne({ username: 'admin', password: 'admin' });
             if (!adminUser) {
-                await User.register({username: 'admin', email: 'admin@example.com', isAdmin: true}, 'admin');
+                await User.register({username: 'admin', email: 'admin@example.com', password: 'admin', isAdmin: true}, 'admin');
                 console.log('Admin user created successfully');
             } 
             else {

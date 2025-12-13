@@ -1,7 +1,9 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
+const User = require('../models/user');
 
 const dbUrl = process.env.DB_URL;
 
@@ -25,6 +27,26 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
     await Campground.deleteMany({});
+    // Find or create admin user
+    let adminUser = await User.findOne({ username: 'admin' });
+    if (!adminUser) {
+        try {
+            adminUser = await User.register({username: 'admin', email: 'admin@example.com', isAdmin: true}, 'admin');
+            console.log('Admin user created for seeding');
+        } catch (err) {
+            console.log('Error creating admin user:', err.message);
+            // Try to find by email if register fails
+            adminUser = await User.findOne({ email: 'admin@example.com' });
+            if (!adminUser) {
+                console.log('No admin user found. Please create one manually or check your database.');
+                mongoose.connection.close();
+                return;
+            }
+        }
+    }
+    
+    console.log('Using admin user:', adminUser.username, 'ID:', adminUser._id);
+
     for (let i = 0; i < 50; i++) {
         const random1000 = Math.floor(Math.random() * 200);
         const price = Math.floor(Math.random() * 20) + 10;
@@ -39,7 +61,7 @@ const seedDB = async () => {
                     cities[random1000].latitute,
                 ]
             },
-            image: [
+            images: [
                 {
                     url: 'https://res.cloudinary.com/dgfd3hbt7/image/upload/v1734463641/CampTrek/vv0guyu9mdfqxcsgya1a.jpg',
                     filename: 'CampTrek/vv0guyu9mdfqxcsgya1a'

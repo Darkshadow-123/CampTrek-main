@@ -25,6 +25,11 @@ module.exports.validateCampground = (req, res, next) => {
 module.exports.isAuthor = async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
+    if (!campground) {
+        req.flash('error', 'Cannot find campground!');
+        return res.redirect('/campgrounds');
+    }
+    // Allow if user is the author OR user is an admin
     if (!campground.author.equals(req.user._id) && !req.user.isAdmin) {
         req.flash('error', 'You do not have permission to do that!');
         return res.redirect(`/campgrounds/${id}`);
@@ -42,10 +47,10 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     next();
 }
 
-module.exports.isAdmin = (req,res,next)=>{
-    if (!req.isAuthenticated() || !req.user.isAdmin){
-        req.flash('error', 'You do not have permission to do that!');
-        return res.redirect(`/campgrounds/${id}`);
+module.exports.isAdmin = (req, res, next) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+        req.flash('error', 'You do not have admin access!');
+        return res.redirect('/campgrounds'); // Fixed: removed undefined 'id'
     }
     next();
 }
