@@ -75,7 +75,24 @@ mongoose.connect(dbUrl, {
     
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
-    
+
+    // Replace line 79 with this:
+    (async () => {
+        try {
+            const adminUser = await User.findOne({ username: 'admin' });
+            if (!adminUser) {
+                await User.register({username: 'admin', email: 'admin@example.com', isAdmin: true}, 'admin');
+                console.log('Admin user created successfully');
+            } 
+            else {
+                console.log('Admin user already exists');
+            }
+        } 
+        catch (err) {
+            console.log('Admin user setup error:', err.message);
+        }
+    })();
+
     app.use((req, res, next) => {
         console.log(req.session)
         res.locals.currentUser = req.user;
