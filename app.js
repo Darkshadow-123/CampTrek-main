@@ -46,7 +46,7 @@ mongoose.connect(dbUrl, {
     const store = MongoStore.create({
         mongoUrl: dbUrl,
         collectionName: 'sessions',
-        secret: 'thisshouldbeabettersecret!',
+        secret: process.env.SECRETE,
         touchAfter: 24 * 60 * 60
     });
     store.on('error', function (e) {
@@ -57,7 +57,7 @@ mongoose.connect(dbUrl, {
     app.use(session({
         store,
         name: 'session',
-        secret: 'thisshouldbeabettersecret!',
+        secret: process.env.SECRETE,
         resave: false,
         saveUninitialized: false,
         cookie: {
