@@ -3,15 +3,16 @@ const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
 
-mongoose.connect('mongodb://127.0.0.1:27017/camptrek')
-    .then(() => {
-        console.log("MONGO CONNECTION OPEN!!!")
-    })
-    .catch(err => {
-        console.log("Error, MONGO CONNECTION!!!!")
-        console.log(err)
-    })
+const dbUrl = process.env.DB_URL;
 
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,     // prevents ensureIndex warning
+    useFindAndModify: false   // avoids findAndModify warning
+})
+.then(() => console.log("MONGO CONNECTION OPEN!!!"))
+.catch((err) => console.log("MONGO CONNECTION ERROR:", err));
 
 const db = mongoose.connection;
 
