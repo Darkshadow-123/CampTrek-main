@@ -122,6 +122,7 @@ mongoose.connect(dbUrl, {
         res.status(statusCode).render('error', { err })
     })
     
-    app.listen(3000, () => {
-        console.log('Serving on port 3000')
+    const port = process.env.PORT || 3210;
+    app.listen(port, () => {
+        console.log(`Serving on port ${port}`)
     })

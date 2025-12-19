@@ -1,0 +1,7 @@
+# Exclude server-side Express middleware file to avoid Vercel Edge Middleware
+middleware.js
+
+# Other local files to ignore during deployment
+node_modules/
+.env
+README.md
